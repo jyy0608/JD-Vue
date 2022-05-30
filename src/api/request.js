@@ -28,6 +28,10 @@ requests.interceptors.request.use((config)=>{
         // 给请求头添加一个字段(userTempId):
         config.headers.userTempId = store.state.detail.uuid_token
     }
+    // 判断是否需要token
+    if(store.state.user.token){
+        config.headers.token = store.state.user.token
+    }
     nprogress.start()
     return config
 });

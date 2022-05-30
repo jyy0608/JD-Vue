@@ -41,11 +41,11 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="idAllCheck">
+        <input class="chooseAll" type="checkbox" :checked="isAllCheck && cartInfoList.length > 0" @change="updateAllCartChecked">
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="deleteAllChecked">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -57,7 +57,7 @@
           <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <router-link to="trade" class="sum-btn">结算</router-link>
         </div>
       </div>
     </div>
@@ -107,7 +107,7 @@
         } catch (error) {
           alert(error.message)
         }
-      }, 500),
+      }, 1000),
       // 删除购物车中商品信息
       async deleteCartById(cart) {
         try {
@@ -129,7 +129,25 @@
         } catch (error) {
           alert(error.message)
         }
-
+      },
+      // 删除全部选中的商品
+      async deleteAllChecked() {
+        try {
+          await this.$store.dispatch('deleteAllCheckedCart')
+          this.getData()
+        } catch (error) {
+          alert(error.message)
+        }
+      },
+      // 修改全选状态
+      async updateAllCartChecked(event) {
+        let checked = event.target.checked ? '1' : '0'
+        try {
+          await this.$store.dispatch("updateAllCartIsChecked", checked)
+          this.getData()
+        } catch (error) {
+          alert(error.message)
+        }
       },
 
     },
@@ -147,7 +165,7 @@
         return sum
       },
       // 判断底部的复选框是否勾选
-      idAllCheck() {
+      isAllCheck() {
         return this.cartInfoList.every(item => item.isChecked == 1)
       },
 

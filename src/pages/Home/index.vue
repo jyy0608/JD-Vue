@@ -30,6 +30,7 @@
         mounted() {
             // 派发action获取floor组件数据
             this.$store.dispatch('getFloorList')
+            
         },
         computed:{
             ...mapState({

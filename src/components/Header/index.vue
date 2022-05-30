@@ -4,20 +4,25 @@
         <div class="top">
             <div class="container">
                 <div class="loginList">
-                    <p>尚品汇欢迎您！</p>
-                    <p>
+                    <p>京东商城欢迎您！</p>
+                    <p v-if="!username">
                         <span>请</span>
                         <router-link to="/login">登录</router-link>
                         <router-link class="register" to="/register">免费注册</router-link>
                     </p>
+                    <!-- 登陆了 -->
+                    <p v-else>
+                        <a>{{username}}</a>
+                        <a class="register" @click="logout">退出登录</a>
+                    </p>
                 </div>
                 <div class="typeList">
-                    <a href="###">我的订单</a>
-                    <a href="###">我的购物车</a>
-                    <a href="###">我的尚品汇</a>
-                    <a href="###">尚品汇会员</a>
+                    <router-link to="/center/myorder">我的订单</router-link>
+                    <router-link to="/shopcart">我的购物车</router-link>
+                    <a href="###">我的京东</a>
+                    <a href="###">京东会员</a>
                     <a href="###">企业采购</a>
-                    <a href="###">关注尚品汇</a>
+                    <a href="###">关注京东商城</a>
                     <a href="###">合作招商</a>
                     <a href="###">商家后台</a>
                 </div>
@@ -27,18 +32,14 @@
         <div class="bottom">
             <h1 class="logoArea">
                 <router-link class="logo" to="/home">
-                    <img src="./images/logo.png" alt="">
+                    <img src="./images/JD.png" alt="">
                 </router-link>
             </h1>
             <div class="searchArea">
                 <form action="###" class="searchForm">
                     <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword" />
-                    <button 
-                        class="sui-btn btn-xlarge btn-danger" 
-                        type="button"
-                        @click="goSearch"
-                    >
-                    搜索
+                    <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">
+                        搜索
                     </button>
                 </form>
             </div>
@@ -51,12 +52,12 @@
         name: '',
         data() {
             return {
-                keyword:'',
+                keyword: '',
             }
         },
         methods: {
             // 搜索按钮的回调函数：需要向search路由进行跳转
-            goSearch(){
+            goSearch() {
                 // 路由传参
                 // 第一种字符串形式
                 // this.$router.push('/search/'+this.keyword+"?k="+this.keyword.toUpperCase())
@@ -64,12 +65,12 @@
                 // this.$router.push(`/search/${this.keyword}?k=${this.keyword.toUpperCase()}`)
                 // 第三种：对象
                 let location = {
-                    name:'search',
+                    name: 'search',
                     params: {
                         keyword: this.keyword == '' ? undefined : this.keyword,
                     },
                 }
-                if(this.$route.query){
+                if (this.$route.query) {
                     location.query = this.$route.query
                 }
                 this.$router.push(location)
@@ -121,14 +122,32 @@
                 },()=>{}, (error)=>{
                     console.log(error)
                 }) */
-            }
+            },
+            // 退出登录
+            async logout() {
+                try {
+                    // 通知服务器退出登录
+                    await this.$store.dispatch('userLogout')
+                    // 回到首页
+                    this.$router.push('home')
+                } catch (error) {
+                    alert(error.message)
+                }
+            },
+
         },
         mounted() {
             // 通过全局事件总线清楚关键字
-            this.$bus.$on('clearKeyword', ()=>{
+            this.$bus.$on('clearKeyword', () => {
                 this.keyword = ""
             })
         },
+        computed: {
+            username() {
+                return this.$store.state.user.userInfo.name
+            }
+        },
+
     }
 </script>
 
@@ -193,7 +212,7 @@
 
             .searchArea {
                 float: right;
-                margin-top: 35px;
+                margin-top: 55px;
 
                 .searchForm {
                     overflow: hidden;

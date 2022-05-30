@@ -3,6 +3,8 @@ module.exports = defineConfig({
   transpileDependencies: true,
   // 关闭eslint
   lintOnSave:false,
+  // 打包时取消map文件
+  productionSourceMap:false,
   // 配置代理跨域
   devServer: {
     proxy: {
